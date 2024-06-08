@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- For ABC cargo-compete no longer extract time limits and the relative/absolute errors, because they are not "specific integers or strings". ([qryxip/snowchains#164](https://github.com/qryxip/snowchains/pull/164))
+
 ## [0.10.6] - 2023-08-13Z
 
 ### Changed
