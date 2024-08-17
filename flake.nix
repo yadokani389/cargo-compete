@@ -23,7 +23,7 @@
         packages = {
           # replace hello-world with your package name
           cargo-compete = rustPkgs.workspace.cargo-compete { };
-          default = packages.hello-world;
+          default = packages.cargo-compete;
         };
       });
 }
