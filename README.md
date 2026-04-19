@@ -225,15 +225,15 @@ You can convert code with a tool such as [cargo-equip](https://github.com/qryxip
 ```toml
 [submit]
 kind = "command"
-args = ["cargo", "+1.70.0", "equip", "--exclude-atcoder-202301-crates", "--remove", "docs", "--minify", "libs", "--bin", "{{ bin_name }}"]
-language_id = "5054"
+args = ["cargo", "+1.89.0", "equip", "--exclude-atcoder-crates", "--remove", "docs", "--minify", "libs", "--bin", "{{ bin_name }}"]
+language_id = "6088"
 ```
 
 ```toml
 [submit]
 kind = "command"
 args = ["cargo", "executable-payload", "--bin", "{{ bin_name }}"]
-language_id = "5054"
+language_id = "6088"
 ```
 
 ## Configuration
@@ -369,7 +369,7 @@ path = "./{{ contest }}"
 
 [test]
 # Toolchain for the test. (optional)
-toolchain = "1.42.0"
+toolchain = "1.89.0"
 # Profile for `cargo build`. ("dev" | "release")
 #
 # Defaults to `"dev"`.
@@ -378,11 +378,11 @@ toolchain = "1.42.0"
 [submit]
 kind = "file"
 path = "{{ src_path }}"
-language_id = "5054"
+language_id = "6088"
 #[submit]
 #kind = "command"
-#args = ["cargo", "+1.70.0", "equip", "--exclude-atcoder-202301-crates", "--remove", "docs", "--minify", "libs", "--bin", "{{ bin_name }}"]
-#language_id = "5054"
+#args = ["cargo", "+1.89.0", "equip", "--exclude-atcoder-crates", "--remove", "docs", "--minify", "libs", "--bin", "{{ bin_name }}"]
+#language_id = "6088"
 ```
 
 And here is an example for `package.metadata` in `Cargo.toml`.
