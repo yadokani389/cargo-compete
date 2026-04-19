@@ -6,17 +6,21 @@ use std::{
     path::{Path, PathBuf},
 };
 
-const FIREFOX_DIRS: &[&str] = &[
+const FIREFOX_COMPATIBLE_DIRS: &[&str] = &[
     ".mozilla/firefox",
     "snap/firefox/common/.mozilla/firefox",
     ".var/app/org.mozilla.firefox/.mozilla/firefox",
+    ".zen",
+    ".config/zen",
 ];
 
 pub(crate) fn update_atcoder_cookie_best_effort(cookies_path: &Path, shell: &mut Shell) {
-    let browser = env::var("ACCC_BROWSER").unwrap_or_else(|_| "firefox".into());
+    let browser = env::var("ACCC_BROWSER").unwrap_or_else(|_| "firefox-compatible".into());
 
-    if browser != "firefox" {
-        let _ = shell.warn("cookie update skipped: only firefox is supported".to_string());
+    if !matches!(browser.as_str(), "firefox" | "zen" | "firefox-compatible") {
+        let _ = shell.warn(
+            "cookie update skipped: only firefox-compatible browsers are supported".to_string(),
+        );
         return;
     }
 
@@ -29,8 +33,8 @@ pub(crate) fn update_atcoder_cookie_best_effort(cookies_path: &Path, shell: &mut
 }
 
 fn update_from_firefox(cookies_path: &Path) -> anyhow::Result<()> {
-    let db =
-        newest_cookie_db().ok_or_else(|| anyhow::anyhow!("no firefox cookies.sqlite found"))?;
+    let db = newest_cookie_db()
+        .ok_or_else(|| anyhow::anyhow!("no firefox-compatible cookies.sqlite found"))?;
     let tempdir = tempfile::tempdir()?;
     let tmp_db = tempdir.path().join("cookies.sqlite");
     fs::copy(&db, &tmp_db)?;
@@ -54,8 +58,8 @@ fn update_from_firefox(cookies_path: &Path) -> anyhow::Result<()> {
         )
         .optional()?;
 
-    let (host, name, value, path, expiry) =
-        row.ok_or_else(|| anyhow::anyhow!("REVEL_SESSION not found in firefox cookies"))?;
+    let (host, name, value, path, expiry) = row
+        .ok_or_else(|| anyhow::anyhow!("REVEL_SESSION not found in firefox-compatible cookies"))?;
 
     let expires = expiry.and_then(|e| {
         let secs = if e > 1_000_000_000_000 { e / 1000 } else { e };
@@ -82,7 +86,7 @@ fn update_from_firefox(cookies_path: &Path) -> anyhow::Result<()> {
 
 fn newest_cookie_db() -> Option<PathBuf> {
     let mut candidates = Vec::new();
-    for root in FIREFOX_DIRS {
+    for root in FIREFOX_COMPATIBLE_DIRS {
         let root = PathBuf::from(std::env::var("HOME").unwrap_or_default()).join(root);
         let _ = collect_cookie_dbs(&root, &mut candidates);
     }
