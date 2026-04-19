@@ -1143,7 +1143,7 @@ fn guess_input_from_lines(
             input_fields.push(format!("{row_var}: [{elem_ty}; {len_var}]"));
 
             extra_lines.push(format!("for _ in 0..{count_expr} {{"));
-            extra_lines.push(format!("    input! {{ {} }}", input_fields.join(", ")));
+            extra_lines.push(format!("    input! {{ {} }};", input_fields.join(", ")));
             for line in push_lines {
                 extra_lines.push(line);
             }
@@ -1376,6 +1376,7 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
     } else {
         out.push("use proconio::input;".to_string());
     }
+    out.push(String::new());
     out.push("fn main() {".to_string());
 
     if !has_cases && !has_queries {
@@ -1383,7 +1384,7 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
         for d in &decls {
             out.push(format!("        {d}"));
         }
-        out.push("    }".to_string());
+        out.push("    };".to_string());
         for l in &extra_lines {
             out.push(format!("    {l}"));
         }
@@ -1396,10 +1397,11 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
     for d in decls {
         out.push(format!("        {d}"));
     }
-    out.push("    }".to_string());
+    out.push("    };".to_string());
     for l in extra_lines {
         out.push(format!("    {l}"));
     }
+    out.push(String::new());
 
     if has_cases {
         if task.input_blocks.len() >= 2 {
@@ -1416,7 +1418,7 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
             for d in case_decls {
                 out.push(format!("            {d}"));
             }
-            out.push("        }".to_string());
+            out.push("        };".to_string());
             for l in case_extra_lines {
                 out.push(format!("        {l}"));
             }
@@ -1426,7 +1428,7 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
             return Ok(out.join("\n"));
         }
         out.push("    for _ in 0..t {".to_string());
-        out.push("        input! { /* per-testcase fields */ }".to_string());
+        out.push("        input! { /* per-testcase fields */ };".to_string());
         out.push("        /* solve testcase */".to_string());
         out.push("    }".to_string());
         out.push("}".to_string());
@@ -1465,7 +1467,7 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
     }
     if !qtypes.is_empty() {
         qtypes.sort_by_key(|x| x.0);
-        out.push("        input! { qt: usize }".to_string());
+        out.push("        input! { qt: usize };".to_string());
         out.push("        match qt {".to_string());
         for (qt, toks) in qtypes {
             if toks.is_empty() {
@@ -1476,7 +1478,7 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
                     .map(|t| format!("{}: {}", snake(t), num_ty_for_token(t, &signed)))
                     .collect::<Vec<_>>()
                     .join(", ");
-                out.push(format!("            {qt} => {{ input! {{ {inner} }} }},"));
+                out.push(format!("            {qt} => {{ input! {{ {inner} }}; }},"));
             }
         }
         out.push("            _ => unreachable!(),".to_string());
@@ -1491,11 +1493,11 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
                 .map(|t| format!("{t}: {}", num_ty_for_token(t, &signed)))
                 .collect::<Vec<_>>()
                 .join(", ");
-            out.push(format!("        input! {{ {inner} }}"));
+            out.push(format!("        input! {{ {inner} }};"));
         } else {
             let qt_name = sym_name.unwrap_or_else(|| "t".to_string());
             let qt_ty = num_ty_for_token(&qt_name, &signed);
-            out.push(format!("        input! {{ {qt_name}: {qt_ty} }}"));
+            out.push(format!("        input! {{ {qt_name}: {qt_ty} }};"));
             out.push(format!("        match {qt_name} {{"));
             for (idx, (_, toks)) in sym_types.iter().enumerate() {
                 let qt = idx + 1;
@@ -1507,7 +1509,7 @@ fn render_section(task: &TaskSection) -> anyhow::Result<String> {
                         .map(|t| format!("{}: {}", snake(t), num_ty_for_token(t, &signed)))
                         .collect::<Vec<_>>()
                         .join(", ");
-                    out.push(format!("            {qt} => {{ input! {{ {inner} }} }},"));
+                    out.push(format!("            {qt} => {{ input! {{ {inner} }}; }},"));
                 }
             }
             out.push("            _ => unreachable!(),".to_string());

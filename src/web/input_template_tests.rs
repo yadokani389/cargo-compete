@@ -43,7 +43,7 @@ fn guess_input_handles_strictly_superior_format() {
     assert!(got
         .extra_lines
         .iter()
-        .any(|l| l.contains("input! { p_i: usize, c_i: usize, f_row: [usize; c_i] }")));
+        .any(|l| l.contains("input! { p_i: usize, c_i: usize, f_row: [usize; c_i] };")));
 }
 
 #[test]
@@ -63,7 +63,8 @@ fn render_section_handles_strictly_superior_block() {
     assert!(rendered.contains("let mut p: Vec<usize>"), "{}", rendered);
     assert!(rendered.contains("let mut c: Vec<usize>"));
     assert!(rendered.contains("let mut f: Vec<Vec<usize>>"));
-    assert!(rendered.contains("input! { p_i: usize, c_i: usize, f_row: [usize; c_i] }"));
+    assert!(rendered.contains("use proconio::input;\n\nfn main() {"));
+    assert!(rendered.contains("input! { p_i: usize, c_i: usize, f_row: [usize; c_i] };"));
 }
 
 #[test]
